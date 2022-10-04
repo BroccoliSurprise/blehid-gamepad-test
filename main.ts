@@ -1,76 +1,57 @@
+/**
+ * Konklusjon:
+ * 
+ * DPAD-funksjon er ikke innafor
+ */
 control.onEvent(EventBusSource.MICROBIT_ID_BUTTON_A, EventBusValue.MICROBIT_BUTTON_EVT_UP, function () {
-    gamepad.send(
-    gamepad._buttons(GameButton.A, false),
-    0,
-    0,
-    gamepad._dpad(GameDirection.noDirection),
-    0,
-    0
-    )
+    aPress = false
 })
 control.onEvent(EventBusSource.MICROBIT_ID_BUTTON_A, EventBusValue.MICROBIT_BUTTON_EVT_DOWN, function () {
-    gamepad.send(
-    gamepad._buttons(GameButton.A, true),
-    0,
-    0,
-    gamepad._dpad(GameDirection.noDirection),
-    0,
-    0
-    )
+    aPress = true
 })
 control.onEvent(EventBusSource.MICROBIT_ID_BUTTON_B, EventBusValue.MICROBIT_BUTTON_EVT_UP, function () {
-    gamepad.send(
-    gamepad._buttons(GameButton.B, false),
-    0,
-    0,
-    gamepad._dpad(GameDirection.noDirection),
-    0,
-    0
-    )
+    bPress = false
 })
 control.onEvent(EventBusSource.MICROBIT_ID_BUTTON_B, EventBusValue.MICROBIT_BUTTON_EVT_DOWN, function () {
-    gamepad.send(
-    gamepad._buttons(GameButton.B, true),
-    0,
-    0,
-    gamepad._dpad(GameDirection.noDirection),
-    0,
-    0
-    )
+    bPress = true
 })
+let bPress = false
+let aPress = false
 gamepad.startGamepadService()
 led.enable(false)
-// UP
-pins.setPull(DigitalPin.P3, PinPullMode.PullUp)
-let p3Press = false
+aPress = false
+bPress = false
+let p3UPPress = false
+let p4RIGHTPress = false
+let p6DOWNPress = false
+let p7LEFTPress = false
+// Sjekk D-Pad
 basic.forever(function () {
-    serial.writeValue("x", pins.analogReadPin(AnalogPin.P3))
-})
-// Pin 3 Button Press
-basic.forever(function () {
-    if (pins.analogReadPin(AnalogPin.P3) < 100) {
-        if (!(p3Press)) {
-            p3Press = true
-            gamepad.send(
-            gamepad._buttons(GameButton.A, true),
-            0,
-            0,
-            gamepad._dpad(GameDirection.noDirection),
-            0,
-            0
-            )
-        }
+    if (pins.digitalReadPin(DigitalPin.P3) == 1) {
+        p3UPPress = true
     } else {
-        if (p3Press) {
-            p3Press = false
-            gamepad.send(
-            gamepad._buttons(GameButton.A, false),
-            0,
-            0,
-            gamepad._dpad(GameDirection.noDirection),
-            0,
-            0
-            )
-        }
+        p3UPPress = false
     }
+    if (pins.digitalReadPin(DigitalPin.P4) == 1) {
+        p4RIGHTPress = true
+    } else {
+        p4RIGHTPress = false
+    }
+    if (pins.digitalReadPin(DigitalPin.P6) == 1) {
+        p6DOWNPress = true
+    } else {
+        p6DOWNPress = false
+    }
+    if (pins.digitalReadPin(DigitalPin.P7) == 1) {
+        p7LEFTPress = true
+    } else {
+        p7LEFTPress = false
+    }
+})
+basic.forever(function () {
+    serial.writeValue("3", pins.digitalReadPin(DigitalPin.P3))
+    serial.writeValue("4", pins.digitalReadPin(DigitalPin.P4))
+    serial.writeValue("6", pins.digitalReadPin(DigitalPin.P6))
+    serial.writeValue("7", pins.digitalReadPin(DigitalPin.P7))
+    serial.writeValue("8", pins.digitalReadPin(DigitalPin.P8))
 })
